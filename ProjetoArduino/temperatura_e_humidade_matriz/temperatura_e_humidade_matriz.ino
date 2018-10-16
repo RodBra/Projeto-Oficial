@@ -16,12 +16,12 @@ void loop() {
   float t = dht.readTemperature();
   
   if (isnan(t) || isnan(h)) {
-    Serial.println("Failed to read from DHT");
+    Serial.println("Erro ao ler dados do DHT11 com Arduino");
   } else {
   Serial.print(t);
   Serial.print(":");
   Serial.println(h);   
   }
     
-  delay(1000);
+  delay(2000);
 }
