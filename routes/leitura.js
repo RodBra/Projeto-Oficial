@@ -37,7 +37,7 @@ router.get('/', (req, res, next) => {
 router.get('/dt', (req, res, next) => {
     let limit = 50;
     let response = {};
-    Database.query(`SELECT momento, temperatura, umidade FROM leitura ORDER BY id DESC LIMIT ${limit}`, (error, results) => {
+    Database.query(`SELECT momento, temperatura, umidade FROM leitura ORDER BY id DESC OFFSET 0 ROWS FETCH NEXT ${limit} ROWS ONLY`, (error, results) => {
         if (error) {
             console.log(error);
             res.status(400).json({"error": "error reading database"});
