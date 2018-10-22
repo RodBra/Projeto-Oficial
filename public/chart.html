@@ -35,7 +35,7 @@
         <!-- Google Chart Library -->
         <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     </head>
-    
+
     <body id="body">
         <div id="chart_div"></div>
         <div id="a"></div>
@@ -74,8 +74,8 @@
 
         google.charts.setOnLoadCallback(() => {
             chart = new google.charts.Line(document.getElementById('chart_div'));
-            loadData2();
-            setInterval(loadData2, 1000);
+            loadData();
+            setInterval(loadData, 2500);
         });
 
         var chart;
@@ -88,32 +88,8 @@
             $.ajax({
                 cache: false,
                 method: "get",
-                url: "/leitura",
-                success: function (data) {
-                    for (let i = 1; i < data.length; i++) {
-                        //data[i][0] = Date(data[i][0]);
-                        data[i][0] = data[i][0].split('-');
-                    }
-                    var dataTable = new google.visualization.arrayToDataTable(data, false);
-                    drawChart(dataTable);
-                },
-                error: function (e) {
-                    console.log("Error:", e);
-                }
-            });
-        }
-
-        function loadData2() {
-            console.log('loadData2 called');
-            $.ajax({
-                cache: false,
-                method: "get",
                 url: "/leitura/dt",
                 success: function (data) {
-                    /*for (let i = 1; i < data.length; i++) {
-                        //data[i][0] = Date(data[i][0]);
-                        data[i][0] = data[i][0].split('-');
-                    }*/
                     var dataTable = new google.visualization.DataTable(data);
                     drawChart(dataTable);
                 },

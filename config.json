@@ -1,15 +1,12 @@
 {
     "database": {
-        "host": "testexyzwtrtwr.database.windows.net",
+        "server": "testexyzwtrtwr.database.windows.net",
         "user": "adminbandtec",
         "password": "b@ndtec2018",
-        "database": "gf2018"
-    },
-    "databasea": {
-        "host": "",
-        "user": "",
-        "password": "",
-        "database": ""
+        "database": "gf2018",
+        "options": {
+            "encrypt": true
+        }
     },
     "security": {
         "key": "CHAVE_SEGURANCA"

@@ -15,13 +15,15 @@ router.get('/', (req, res, next) => {
         res.redirect('/login');
     } else {*/
         let limit = 50;
-        Database.query(`SELECT momento, temperatura, umidade FROM leitura ORDER BY id DESC LIMIT ${limit}`, (error, results, rows) => {
+        Database.query(`SELECT TOP ${limit} momento, temperatura, umidade FROM leitura`, (error, results, rows) => {
             if (error) {
                 console.log(error);
                 res.status(400).json({"error": "error reading database"});
             }
+            results = results.recordsets[0];
+
             let data = [['momento', 'temperatura', 'umidade']];
-            
+
             for (let i = 0; i < results.length; i++) {
                 let row = results[i];
                 //let momento = moment(row.momento).format('YYYY, MM, DD, HH, mm, ss');
@@ -35,33 +37,37 @@ router.get('/', (req, res, next) => {
 });
 
 router.get('/dt', (req, res, next) => {
+
     let limit = 50;
     let response = {};
-    Database.query(`SELECT momento, temperatura, umidade FROM leitura ORDER BY id DESC OFFSET 0 ROWS FETCH NEXT ${limit} ROWS ONLY`, (error, results) => {
-        if (error) {
-            console.log(error);
-            res.status(400).json({"error": "error reading database"});
-        }
+    Database.query(`SELECT TOP ${limit} momento, temperatura, umidade FROM leitura`).then(results => {
+        results = results.recordsets[0];
+
         response.cols = [
             {id: 'momento', label: 'momento', type: 'timeofday'},
             {id: 'temperatura', label: 'temperatura', type: 'number'},
             {id: 'umidade', label: 'umidade', type: 'number'}
         ];
         let rows = [];
-        for (let i = 0; i < results.length; i++) {
+        for (let i = 1; i < results.length; i++) {
             let row = results[i];
             //let momento = moment(row.momento).format('YYYY, MM, DD, HH, mm, ss');
             let momento = moment(row.momento).format('HH-mm-ss').split('-');
-            rows.push({
+            let entry = {
                 c: [{v: momento},
                     {v: row.temperatura},
                     {v: row.umidade}
                    ]
-                });
+               };
+            rows.push(entry);
         }
         response.rows = rows;
         res.json(response);
+    }).catch(error => {
+        console.log(error);
+        res.status(400).json({"error": "error reading database"});
     });
+
 });
 
 router.post('/', (req, res, next) => {
