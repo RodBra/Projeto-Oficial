@@ -15,18 +15,18 @@ router.get('/', (req, res, next) => {
         res.redirect('/login');
     } else {*/
         let limit = 50;
-        Database.query(`SELECT hora, temperatura, umidade FROM leitura ORDER BY id DESC LIMIT ${limit}`, (error, results, rows) => {
+        Database.query(`SELECT momento, temperatura, umidade FROM leitura ORDER BY id DESC LIMIT ${limit}`, (error, results, rows) => {
             if (error) {
                 console.log(error);
                 res.status(400).json({"error": "error reading database"});
             }
-            let data = [['hora', 'temperatura', 'umidade']];
+            let data = [['momento', 'temperatura', 'umidade']];
             
             for (let i = 0; i < results.length; i++) {
                 let row = results[i];
-                //let hora = moment(row.hora).format('YYYY, MM, DD, HH, mm, ss');
-                let hora = moment(row.hora).format('HH-mm-ss');
-                let entry = [hora, row.temperatura, row.umidade];
+                //let momento = moment(row.momento).format('YYYY, MM, DD, HH, mm, ss');
+                let momento = moment(row.momento).format('HH-mm-ss');
+                let entry = [momento, row.temperatura, row.umidade];
                 data.push(entry);
             }
             res.json(data);
@@ -37,23 +37,23 @@ router.get('/', (req, res, next) => {
 router.get('/dt', (req, res, next) => {
     let limit = 50;
     let response = {};
-    Database.query(`SELECT hora, temperatura, umidade FROM leitura ORDER BY id DESC LIMIT ${limit}`, (error, results) => {
+    Database.query(`SELECT momento, temperatura, umidade FROM leitura ORDER BY id DESC LIMIT ${limit}`, (error, results) => {
         if (error) {
             console.log(error);
             res.status(400).json({"error": "error reading database"});
         }
         response.cols = [
-            {id: 'hora', label: 'hora', type: 'timeofday'},
+            {id: 'momento', label: 'momento', type: 'timeofday'},
             {id: 'temperatura', label: 'temperatura', type: 'number'},
             {id: 'umidade', label: 'umidade', type: 'number'}
         ];
         let rows = [];
         for (let i = 0; i < results.length; i++) {
             let row = results[i];
-            //let hora = moment(row.hora).format('YYYY, MM, DD, HH, mm, ss');
-            let hora = moment(row.hora).format('HH-mm-ss').split('-');
+            //let momento = moment(row.momento).format('YYYY, MM, DD, HH, mm, ss');
+            let momento = moment(row.momento).format('HH-mm-ss').split('-');
             rows.push({
-                c: [{v: hora},
+                c: [{v: momento},
                     {v: row.temperatura},
                     {v: row.umidade}
                    ]
@@ -65,7 +65,7 @@ router.get('/dt', (req, res, next) => {
 });
 
 router.post('/', (req, res, next) => {
-    Database.query(`INSERT INTO LEITURA (temperatura, umidade, hora)
+    Database.query(`INSERT INTO LEITURA (temperatura, umidade, momento)
                     VALUES (${req.body.temperatura}, ${req.body.umidade}, NOW())`, (error, results, rows) => {
                         if (error) {
                             res.json({
