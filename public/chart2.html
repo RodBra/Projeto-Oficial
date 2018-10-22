@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-br; en" id="home">
+
+<head>
+  <title></title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+  <meta name="msapplication-TileColor" content="#ffffff">
+  <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
+  <meta name="theme-color" content="#ffffff">
+
+  <!-- jQuery -->
+  <script src="assets/js/jquery-3.3.1.min.js"></script>
+  <script src="assets/js/jquery-ui.js"></script>
+
+  <!-- Popper -->
+  <script src="assets/js/popper.min.js"></script>
+
+  <!-- Bootstrap -->
+  <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+  <script src="assets/js/bootstrap.js"></script>
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="assets/css/font-awesome.css">
+  <script src="assets/js/7df7e1332b.js"></script>
+
+  <!-- FONTS  -->
+  <link href="https://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Anton" rel="stylesheet">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="assets/css/jquery-ui.css">
+  <link rel="stylesheet" href="assets/css/style.css">
+
+  <!-- Google Chart Library -->
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js"></script>
+</head>
+
+<body id="body">
+  <canvas id="chart"></canvas>
+
+  <script type="text/javascript">
+    var chart = document.getElementById('chart');
+
+    function drawChart(data) {
+
+    }
+
+    function loadData() {
+      $.ajax({
+        cache: false,
+        method: "get",
+        url: "/leitura",
+        success: function(data) {
+          for (let i = 1; i < data.length; i++) {
+            data[i][0] = data[i][0].split('-');
+          }
+        },
+        error: function(e) {
+          console.log("Error:", e);
+        }
+      });
+    }
+  </script>
+</body>
+
+</html>

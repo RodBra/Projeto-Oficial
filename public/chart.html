@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="pt-br; en" id="home">
+    <head>
+        <title></title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+        <meta name="msapplication-TileColor" content="#ffffff">
+        <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
+        <meta name="theme-color" content="#ffffff">
+
+        <!-- jQuery -->
+        <script src="assets/js/jquery-3.3.1.min.js"></script>
+        <script src="assets/js/jquery-ui.js"></script>
+
+        <!-- Popper -->
+        <script src="assets/js/popper.min.js"></script>
+
+        <!-- Bootstrap -->
+        <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+        <script src="assets/js/bootstrap.js"></script>
+
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="assets/css/font-awesome.css">
+        <script src="assets/js/7df7e1332b.js"></script>
+
+        <!-- FONTS  -->
+        <link href="https://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Anton" rel="stylesheet">
+
+        <!-- CSS -->
+        <link rel="stylesheet" href="assets/css/jquery-ui.css">
+        <link rel="stylesheet" href="assets/css/style.css">
+
+        <!-- Google Chart Library -->
+        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    </head>
+    
+    <body id="body">
+        <div id="chart_div"></div>
+        <div id="a"></div>
+
+        <script type="text/javascript">
+
+        google.charts.load('current', {'packages': ['line']});
+
+        var materialOptions = {
+            chart: {
+                title: 'Temperatura e Umidade'
+            },
+            width: 1300,
+            height: 600,
+            series: {
+                0: {
+                    axis: 'temperatura',
+                    color: '#FF0000'
+                },
+                1: {
+                    axis: 'umidade',
+                    color: '#0000FF'
+                }
+            },
+            axes: {
+                y: {
+                    temperatura: {
+                        label: 'Temperatura'
+                    },
+                    umidade: {
+                        label: 'Umidade'
+                    }
+                }
+            }
+        };
+
+        google.charts.setOnLoadCallback(() => {
+            chart = new google.charts.Line(document.getElementById('chart_div'));
+            loadData2();
+            setInterval(loadData2, 1000);
+        });
+
+        var chart;
+
+        function drawChart(data) {
+            chart.draw(data, materialOptions);
+        }
+
+        function loadData() {
+            $.ajax({
+                cache: false,
+                method: "get",
+                url: "/leitura",
+                success: function (data) {
+                    for (let i = 1; i < data.length; i++) {
+                        //data[i][0] = Date(data[i][0]);
+                        data[i][0] = data[i][0].split('-');
+                    }
+                    var dataTable = new google.visualization.arrayToDataTable(data, false);
+                    drawChart(dataTable);
+                },
+                error: function (e) {
+                    console.log("Error:", e);
+                }
+            });
+        }
+
+        function loadData2() {
+            console.log('loadData2 called');
+            $.ajax({
+                cache: false,
+                method: "get",
+                url: "/leitura/dt",
+                success: function (data) {
+                    /*for (let i = 1; i < data.length; i++) {
+                        //data[i][0] = Date(data[i][0]);
+                        data[i][0] = data[i][0].split('-');
+                    }*/
+                    var dataTable = new google.visualization.DataTable(data);
+                    drawChart(dataTable);
+                },
+                error: function (e) {
+                    console.log("Error:", e);
+                }
+            });
+        }
+
+        </script>
+    </body>
+</html>

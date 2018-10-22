@@ -10,12 +10,18 @@
   },
   "dependencies": {
     "cookie-parser": "~1.4.3",
+    "cryptr": "^4.0.0",
     "debug": "~2.6.9",
+    "ejs": "^2.6.1",
     "express": "~4.16.0",
+    "express-session": "^1.15.6",
     "http-errors": "~1.6.2",
+    "moment": "^2.22.2",
+    "moment-timezone": "^0.5.21",
     "morgan": "~1.9.0",
-    "pug": "2.0.0-beta11",
+    "mssql": "~4.2.1",
     "mysql": "~2.16.0",
-    "mssql": "~4.2.1"
+    "nodemon": "^1.18.4",
+    "pug": "2.0.0-beta11"
   }
 }

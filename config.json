@@ -1,0 +1,17 @@
+{
+    "database": {
+        "host": "192.185.128.27",
+        "user": "pedropad_bt",
+        "password": "BandTec123",
+        "database": "pedropad_bandtec"
+    },
+    "databasea": {
+        "host": "",
+        "user": "",
+        "password": "",
+        "database": ""
+    },
+    "security": {
+        "key": "OLHAQUANTASEGURANCAHEIN"
+    }
+}
