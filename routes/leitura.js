@@ -1,5 +1,6 @@
 'use strict';
 
+// configurações gerais, mexer com cautela
 var express = require('express');
 var router = express.Router();
 var isNull = require('../script').isNull;
@@ -8,84 +9,61 @@ const Cryptr = require('cryptr');
 const config = require('../config');
 const cryptr = new Cryptr(config.security.key);
 const moment = require('moment-timezone');
+// configurações gerais, mexer com cautela
 
-router.get('/', (req, res, next) => {
-    //console.log(req.session);
-    /*if (!req.session.user || req.session.user && !req.session.user.logged_in) {
-        res.redirect('/login');
-    } else {*/
-        let limit = 50;
-        Database.query(`SELECT TOP ${limit} momento, temperatura, umidade FROM leitura`, (error, results, rows) => {
-            if (error) {
-                console.log(error);
-                res.status(400).json({"error": "error reading database"});
-            }
-            results = results.recordsets[0];
 
-            let data = [['momento', 'temperatura', 'umidade']];
+// consulta que retorna os N últimos registros de leitura
+router.get('/ultimas', (req, res, next) => {
 
-            for (let i = 0; i < results.length; i++) {
-                let row = results[i];
-                //let momento = moment(row.momento).format('YYYY, MM, DD, HH, mm, ss');
-                let momento = moment(row.momento).format('HH-mm-ss');
-                let entry = [momento, row.temperatura, row.umidade];
-                data.push(entry);
-            }
-            res.json(data);
-        });
-    //}
-});
+    var limite_linhas = 10;
+    var resposta = {};
+    Database.query(`SELECT TOP ${limite_linhas} momento, temperatura, umidade FROM leitura order by momento desc`).then(resultados => {
+        resultados = resultados.recordsets[0];
 
-router.get('/dt', (req, res, next) => {
-
-    let limit = 50;
-    let response = {};
-    Database.query(`SELECT TOP ${limit} momento, temperatura, umidade FROM leitura`).then(results => {
-        results = results.recordsets[0];
-
-        response.cols = [
+        resposta.cols = [
             {id: 'momento', label: 'momento', type: 'timeofday'},
             {id: 'temperatura', label: 'temperatura', type: 'number'},
             {id: 'umidade', label: 'umidade', type: 'number'}
         ];
-        let rows = [];
-        for (let i = 1; i < results.length; i++) {
-            let row = results[i];
-            //let momento = moment(row.momento).format('YYYY, MM, DD, HH, mm, ss');
-            let momento = moment(row.momento).format('HH-mm-ss').split('-');
-            let entry = {
+        
+        var linhas = [];
+        
+        for (var i = 1; i < resultados.length; i++) {
+            var row = resultados[i];
+            var momento = moment(row.momento).format('HH-mm-ss').split('-');
+            var registro = {
                 c: [{v: momento},
                     {v: row.temperatura},
                     {v: row.umidade}
                    ]
                };
-            rows.push(entry);
+            linhas.push(registro);
         }
-        response.rows = rows;
-        res.json(response);
+        resposta.rows = linhas;
+        
+        res.json(resposta);
     }).catch(error => {
         console.log(error);
-        res.status(400).json({"error": "error reading database"});
+        res.status(400).json({"error": `erro na consulta junto ao banco de dados ${error}`});
     });
 
 });
 
-router.post('/', (req, res, next) => {
-    Database.query(`INSERT INTO LEITURA (temperatura, umidade, momento)
-                    VALUES (${req.body.temperatura}, ${req.body.umidade}, NOW())`, (error, results, rows) => {
-                        if (error) {
-                            res.json({
-                                code: 0,
-                                message: 'failed to add values to database',
-                                error: error
-                            });
-                        }
-                        res.json({
-                            code: 1,
-                            message: 'success',
-                            response: results
-                        });
-                    });
+// consulta que retorna as médias de temperatura e umidade
+router.get('/medias', (req, res, next) => {
+
+    Database.query(`SELECT avg(temperatura) as media_temp, avg(umidade) as media_umid FROM leitura`).then(resultados => {
+        var linha = resultados.recordsets[0][0];
+        var temperatura = linha.media_temp.toFixed(2);
+        var umidade = linha.media_umid.toFixed(2);
+        res.json({temperatura:temperatura, umidade:umidade});
+    }).catch(error => {
+        console.log(error);
+        res.status(400).json({"error": `erro na consulta junto ao banco de dados ${error}`});
+    });
+
 });
+
+
 
 module.exports = router;

@@ -1,6 +1,6 @@
 {
     "database": {
-        "server": "testexyzwtrtwr.database.windows.net",
+        "server": "testexyzwtrtwr.database.windows.net", 
         "user": "adminbandtec",
         "password": "b@ndtec2018",
         "database": "gf2018",
