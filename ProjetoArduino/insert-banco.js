@@ -17,10 +17,10 @@ require('events').EventEmitter.defaultMaxListeners = 15;
 
 // configurações de acesso ao banco de dados
 const cfg = {
-    "host": "testexyzwtrtwr.database.windows.net", // server name do banco de dados
-    "user": "adminbandtec", // login ("bandtec")
-    "pass": "b@ndtec2018", // senha do banco de dados
-    "db": "gf2018" // nome da base de dados
+    "host": "thundercatsdb.database.windows.net", // server name do banco de dados
+    "user": "bandtec", // login ("bandtec")
+    "pass": "SphynX11", // senha do banco de dados
+    "db": "thundercats" // nome da base de dados
 };
 
 // configurações da conexão com o banco de dados
@@ -71,7 +71,7 @@ class LeitorArduino {
                         
             // o baudRate deve ser igual ao valor em
             // Serial.begin(xxx) do Arduino (ex: 9600 ou 115200)
-            var arduino = new SerialPort(arduinoCom, {baudRate: 115200});
+            var arduino = new SerialPort(arduinoCom, {baudRate: 9600});
             
             const parser = new Readline();
             arduino.pipe(parser);
@@ -113,7 +113,7 @@ function registrarLeitura(temperatura, umidade) {
 	console.log(`umidade: ${umidade}`);
 	
 	request = new Request(`
-	INSERT into leitura (temperatura, umidade, momento) 
+	INSERT into arduino (temperatura, umidade, tempo) 
 	values (@temperatura, @umidade, CURRENT_TIMESTAMP);
 	`, function(err, linhas) {  
 		 if (err) {  
@@ -123,8 +123,8 @@ function registrarLeitura(temperatura, umidade) {
 		 } 
 		});  
 		
-	request.addParameter('temperatura', TYPES.Decimal, temperatura);  
-	request.addParameter('umidade', TYPES.Decimal , umidade);  
+	request.addParameter('temperatura', TYPES.Float, temperatura);  
+	request.addParameter('umidade', TYPES.Float , umidade);  
 	
 	connection.execSql(request);
 	

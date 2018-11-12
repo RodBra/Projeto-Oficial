@@ -4,7 +4,7 @@ int pinDHT11 = 2;
 SimpleDHT11 dht11(pinDHT11);
 
 void setup() {
-  Serial.begin(115200);
+  Serial.begin(9600);
 }
 
 void loop() {

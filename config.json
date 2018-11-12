@@ -1,9 +1,9 @@
 {
     "database": {
-        "server": "testexyzwtrtwr.database.windows.net", 
-        "user": "adminbandtec",
-        "password": "b@ndtec2018",
-        "database": "gf2018",
+        "server": "thundercatsdb.database.windows.net", 
+        "user": "bandtec",
+        "password": "SphynX11",
+        "database": "thundercats",
         "options": {
             "encrypt": true
         }

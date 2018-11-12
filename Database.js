@@ -1,7 +1,7 @@
 // não mexer neste arquivo!!!
 
 'use strict';
-var mysql = require('mysql');
+//var mysql = require('mysql');
 var config = require("./config").database;
 
 var query = function(queryString = '') {
@@ -11,12 +11,11 @@ var query = function(queryString = '') {
         sql.connect(config).then(pool => {
             return pool.request().query(queryString);
         }).then(results => {
+            sql.close();
             res(results);
         }).catch(e => {
 			sql.close();
             rej(e);
-        }).finally(() => {
-            sql.close();
         });
     });
 };
